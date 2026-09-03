@@ -7,9 +7,15 @@
     Shell.FlyoutBehavior="Disabled"
     Title="Haven">
 
-    <ShellContent
+    <Tab x:Name="TabLayout">
+        <ShellContent
         Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
+        <ShellContent
+        Title="Home"
+        ContentTemplate="{DataTemplate local:MainPage}"
+        Route="MainPage" />
+    </Tab>
 
 </Shell>
