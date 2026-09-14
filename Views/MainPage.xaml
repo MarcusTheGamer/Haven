@@ -1,9 +1,78 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Haven.MainPage">
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
+    xmlns:models="clr-namespace:Haven.Models"
+    x:Class="Haven.MainPage"
+    BackgroundColor="{StaticResource BackgroundPrimary}">
 
-    <ScrollView>
+    <Border>
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Color="{StaticResource BackgroundPrimary}" Offset="0.0"/>
+                <GradientStop Color="{StaticResource BackgroundSecondary}" Offset="1.0"/>
+            </LinearGradientBrush>
+        </Border.Background>
+        <ScrollView>
+            <Grid x:Name="DeviceList" Margin="12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-    </ScrollView>
+                <Border Style="{StaticResource BrickDoubleSlim}">
+                    <VerticalStackLayout Style="{StaticResource DeviceBrickStackLayout}">
+                        <HorizontalStackLayout>
+                            <Border HeightRequest="30" WidthRequest="30" Padding="3" StrokeThickness="1" StrokeShape="RoundRectangle 7" BackgroundColor="{StaticResource ForegroundSecondary}" Margin="0,0,5,0">
+                                <Image Source="lock.png"/>
+                            </Border>
+                            <Label LineBreakMode="WordWrap" VerticalTextAlignment="Center">Front Door nbvgfyhujmkh gfxrtd6yunh vgcfgdtrg6hgynu hfdctedghtng fvd</Label>
+                        </HorizontalStackLayout>
+                        <Label>Locked - 2 min ago</Label>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Style="{StaticResource BrickSingle}" Grid.Row="1">
+                    <VerticalStackLayout Style="{StaticResource DeviceBrickStackLayout}">
+                        <HorizontalStackLayout>
+                            <Image Source="lock.svg" HeightRequest="20" WidthRequest="20" BackgroundColor="{StaticResource BackgroundPrimary}" Margin="0,0,5,0"/>
+                            <Label>Living Room</Label>
+                        </HorizontalStackLayout>
+                        <Label>27c</Label>
+                        <Label>47%</Label>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Style="{StaticResource BrickSingle}" Grid.Row="1" Grid.Column="1">
+                    <VerticalStackLayout Style="{StaticResource DeviceBrickStackLayout}">
+                        <HorizontalStackLayout>
+                            <Image Source="lock.svg" HeightRequest="20" WidthRequest="20" BackgroundColor="{StaticResource BackgroundPrimary}" Margin="0,0,5,0"/>
+                            <Label>Living Room Couch</Label>
+                        </HorizontalStackLayout>
+                        <Label>On</Label>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Style="{StaticResource BrickSingle}" Grid.Row="2">
+                    <VerticalStackLayout Style="{StaticResource DeviceBrickStackLayout}">
+                        <HorizontalStackLayout>
+                            <Image Source="lock.svg" HeightRequest="20" WidthRequest="20" BackgroundColor="{StaticResource BackgroundPrimary}" Margin="0,0,5,0"/>
+                            <Label>Thermostat</Label>
+                        </HorizontalStackLayout>
+                        <Label>22c</Label>
+                        <Label>Auto schedule</Label>
+                    </VerticalStackLayout>
+                </Border>
+
+            </Grid>
+        </ScrollView>
+    </Border>
 </ContentPage>
