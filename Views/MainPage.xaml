@@ -4,7 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
     xmlns:models="clr-namespace:Haven.Models"
-    x:Class="Haven.MainPage"
+    xmlns:gauge="clr-namespace:Syncfusion.Maui.Gauges;assembly=Syncfusion.Maui.Gauges"
+    x:Class="Haven.Views.MainPage"
     BackgroundColor="{StaticResource BackgroundPrimary}">
 
     <Border>
@@ -29,46 +30,94 @@
                 </Grid.RowDefinitions>
 
                 <Border Style="{StaticResource BrickDoubleSlim}">
-                    <VerticalStackLayout Style="{StaticResource DeviceBrickStackLayout}">
-                        <HorizontalStackLayout>
-                            <Border HeightRequest="30" WidthRequest="30" Padding="3" StrokeThickness="1" StrokeShape="RoundRectangle 7" BackgroundColor="{StaticResource ForegroundSecondary}" Margin="0,0,5,0">
-                                <Image Source="lock.png"/>
+                    <VerticalStackLayout Style="{StaticResource BrickVertStackLayout}">
+                        <HorizontalStackLayout Style="{StaticResource BrickHorzStackLayout}">
+                            <Border Style="{StaticResource IconBorder}">
+                                <Image Source="unlock.png"/>
                             </Border>
-                            <Label LineBreakMode="WordWrap" VerticalTextAlignment="Center">Front Door nbvgfyhujmkh gfxrtd6yunh vgcfgdtrg6hgynu hfdctedghtng fvd</Label>
+                            <Label Style="{StaticResource BrickHeaderText}">Front Door</Label>
                         </HorizontalStackLayout>
-                        <Label>Locked - 2 min ago</Label>
+                        <Label Style="{StaticResource ContentText}">Locked - 2 min ago</Label>
                     </VerticalStackLayout>
                 </Border>
 
                 <Border Style="{StaticResource BrickSingle}" Grid.Row="1">
-                    <VerticalStackLayout Style="{StaticResource DeviceBrickStackLayout}">
-                        <HorizontalStackLayout>
-                            <Image Source="lock.svg" HeightRequest="20" WidthRequest="20" BackgroundColor="{StaticResource BackgroundPrimary}" Margin="0,0,5,0"/>
-                            <Label>Living Room</Label>
+                    <VerticalStackLayout Style="{StaticResource BrickVertStackLayout}">
+                        <HorizontalStackLayout Style="{StaticResource BrickHorzStackLayout}">
+                            <Border Style="{StaticResource IconBorder}">
+                                <Image Source="sun.png"/>
+                            </Border>
+                            <Label Style="{StaticResource BrickHeaderText}">Living Room</Label>
                         </HorizontalStackLayout>
-                        <Label>27c</Label>
-                        <Label>47%</Label>
+                        <Label Style="{StaticResource ContentText}">On - Warm White</Label>
                     </VerticalStackLayout>
                 </Border>
 
                 <Border Style="{StaticResource BrickSingle}" Grid.Row="1" Grid.Column="1">
-                    <VerticalStackLayout Style="{StaticResource DeviceBrickStackLayout}">
-                        <HorizontalStackLayout>
-                            <Image Source="lock.svg" HeightRequest="20" WidthRequest="20" BackgroundColor="{StaticResource BackgroundPrimary}" Margin="0,0,5,0"/>
-                            <Label>Living Room Couch</Label>
+                    <VerticalStackLayout Style="{StaticResource BrickVertStackLayout}">
+                        <HorizontalStackLayout Style="{StaticResource BrickHorzStackLayout}">
+                            <Border Style="{StaticResource IconBorder}">
+                                <Image Source="moon.png"/>
+                            </Border>
+                            <Label Style="{StaticResource BrickHeaderText}">Living Room Couch</Label>
                         </HorizontalStackLayout>
-                        <Label>On</Label>
+                        <Label Style="{StaticResource ContentText}">Off</Label>
                     </VerticalStackLayout>
                 </Border>
 
                 <Border Style="{StaticResource BrickSingle}" Grid.Row="2">
-                    <VerticalStackLayout Style="{StaticResource DeviceBrickStackLayout}">
-                        <HorizontalStackLayout>
-                            <Image Source="lock.svg" HeightRequest="20" WidthRequest="20" BackgroundColor="{StaticResource BackgroundPrimary}" Margin="0,0,5,0"/>
-                            <Label>Thermostat</Label>
+                    <VerticalStackLayout Style="{StaticResource BrickVertStackLayout}">
+                        <HorizontalStackLayout Style="{StaticResource BrickHorzStackLayout}">
+                            <Border Style="{StaticResource IconBorder}">
+                                <Image Source="thermometer.png"/>
+                            </Border>
+                            <Label Style="{StaticResource BrickHeaderText}">Living Room</Label>
                         </HorizontalStackLayout>
-                        <Label>22c</Label>
-                        <Label>Auto schedule</Label>
+                        <HorizontalStackLayout>
+                            <Label Style="{StaticResource ImportantText}">22</Label>
+                            <Label Style="{StaticResource ContentTextBoldBottom}">°C</Label>
+                        </HorizontalStackLayout>
+                        <HorizontalStackLayout>
+                            <Label Style="{StaticResource ImportantText}">26</Label>
+                            <Label Style="{StaticResource ContentTextBoldBottom}">%</Label>
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Style="{StaticResource BrickSingle}" Grid.Row="2" Grid.Column="1">
+                    <VerticalStackLayout Style="{StaticResource BrickVertStackLayout}">
+                        <HorizontalStackLayout Style="{StaticResource BrickHorzStackLayout}">
+                            <Border Style="{StaticResource IconBorder}">
+                                <Image Source="moon.png"/>
+                            </Border>
+                            <Label Style="{StaticResource BrickHeaderText}">Living Room Couch</Label>
+                        </HorizontalStackLayout>
+                        <gauge:SfRadialGauge
+    BackgroundColor="Transparent"
+    WidthRequest="100"
+    HeightRequest="100">
+
+                            <gauge:SfRadialGauge.Axes>
+                                <gauge:RadialAxis Minimum="0" Maximum="40" Interval="10" StartAngle="270" EndAngle="180" ShowLabels="False" ShowTicks="False" ShowAxisLine="False">
+
+                                    <gauge:RadialAxis.Ranges>
+                                        <gauge:RadialRange StartValue="0" EndValue="40" />
+                                    </gauge:RadialAxis.Ranges>
+                                    <gauge:RadialAxis.Annotations>
+                                        <gauge:GaugeAnnotation PositionFactor="0" DirectionUnit="AxisValue" DirectionValue="50">
+                                            <gauge:GaugeAnnotation.Content>
+                                                <HorizontalStackLayout>
+                                                    <Label Text="72" Style="{StaticResource ImportantText}"/>
+                                                    <Label Text="°C" Style="{StaticResource ContentTextBold}"/>
+                                                </HorizontalStackLayout>
+                                            </gauge:GaugeAnnotation.Content>
+
+                                        </gauge:GaugeAnnotation>
+                                    </gauge:RadialAxis.Annotations>
+
+                                </gauge:RadialAxis>
+                            </gauge:SfRadialGauge.Axes>
+                        </gauge:SfRadialGauge>
                     </VerticalStackLayout>
                 </Border>
 

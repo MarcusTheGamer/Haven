@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Haven.Models
+namespace Haven
 {
-    internal class Device
+    class API
     {
-        public string Name { get; set; }
-        public string Type { get; set; }
     }
 }

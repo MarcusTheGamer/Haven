@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            x:Class="Haven.Views.DeviceDetailsPage"
+            Title="DeviceDetailsPage"
+            BackgroundColor="{StaticResource BackgroundPrimary}">
+    <Border>
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Color="{StaticResource BackgroundPrimary}" Offset="0.0"/>
+                <GradientStop Color="{StaticResource BackgroundSecondary}" Offset="1.0"/>
+            </LinearGradientBrush>
+        </Border.Background>
+        <ScrollView>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Border StrokeShape="RoundRectangle 20" Margin="18,18,18,10">
+                    <Grid>
+                        <Image MinimumHeightRequest="150"/>
+                    </Grid>
+                </Border>
+                <Border Grid.Row="1" StrokeThickness="2" StrokeShape="RoundRectangle 20" BackgroundColor="{StaticResource BorderPrimary}" Margin="18,10,18,18">
+                    <VerticalStackLayout BackgroundColor="{StaticResource ForegroundPrimary}" Padding="15">
+                        <Label Style="{StaticResource HeaderText}" FontSize="20">Living Room</Label>
+                        <Label Style="{StaticResource ContentText}" FontSize="13">Thermostat</Label>
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+        </ScrollView>
+    </Border>
+</ContentPage>

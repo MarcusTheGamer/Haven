@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Haven.Models
+namespace Haven.ViewModels
 {
-    internal class Device
+    internal class DeviceDetailsViewModel
     {
-        public string Name { get; set; }
-        public string Type { get; set; }
     }
 }

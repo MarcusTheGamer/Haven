@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Haven.Views.FindDevicesPage"
+             Title="FindDevices">
+    <Border>
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Color="{StaticResource BackgroundPrimary}" Offset="0.0"/>
+                <GradientStop Color="{StaticResource BackgroundSecondary}" Offset="1.0"/>
+            </LinearGradientBrush>
+        </Border.Background>
+        <VerticalStackLayout Padding="15">
+            <HorizontalStackLayout Margin="2,0,0,0">
+                <ActivityIndicator IsRunning="True" WidthRequest="15" HeightRequest="15" Color="{StaticResource Accent}"/>
+                <Label Style="{StaticResource ContentText}" Margin="5,0,0,0">Searching for nearby devices...</Label>
+            </HorizontalStackLayout>
+
+            <Border HeightRequest="5" StrokeShape="RoundRectangle 5" StrokeThickness="2" Background="{StaticResource Accent}" Margin="0,15,0,15"/>
+
+            <CollectionView ItemsSource="{Binding Devices}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border>
+                            <Grid HeightRequest="35">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="35"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="60"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Style="{StaticResource IconBorder}" WidthRequest="35" HeightRequest="35" Margin="0" Padding="7">
+                                    <Image Source="unlock.png"/>
+                                </Border>
+                            
+                                <Label Text="{Binding Name}" Style="{StaticResource HeaderText}" FontSize="16" Grid.Column="1" Margin="5,0,0,0" VerticalTextAlignment="Center"/>
+
+                                <Button Text="Add" Style="{StaticResource HeaderText}" Background="{StaticResource BackgroundPrimary}" BorderWidth="2" Grid.Column="2"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </Border>
+</ContentPage>

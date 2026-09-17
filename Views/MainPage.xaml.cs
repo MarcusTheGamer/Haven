@@ -1,6 +1,6 @@
 ﻿using Models = Haven.Models;
 
-namespace Haven
+namespace Haven.Views
 {
     public partial class MainPage : ContentPage
     {

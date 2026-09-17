@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Haven.Models
+namespace Haven.ViewModels
 {
-    internal class Device
+    internal class MainPageViewModel : ObservableObject
     {
-        public string Name { get; set; }
-        public string Type { get; set; }
     }
 }

@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Haven.Models
 {
-    internal class Device
+    internal class FoundDevice
     {
-        public string Name { get; set; }
-        public string Type { get; set; }
+        public string ModelName { get; set; }
     }
 }

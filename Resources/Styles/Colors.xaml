@@ -4,14 +4,15 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
-    <!-- Note: For Android please see also Platforms\Android\Resources\values\colors.xml -->
-
     <Color x:Key="BackgroundPrimary">#16262a</Color>
     <Color x:Key="BackgroundSecondary">#0f1417</Color>
     <Color x:Key="ForegroundPrimary">#171e22</Color>
     <Color x:Key="ForegroundSecondary">#2e2136</Color>
     <Color x:Key="ForegroundTertiary">#b09bbe</Color>
     <Color x:Key="BorderPrimary">#3a2c42</Color>
+    <Color x:Key="Accent">#f2a65a</Color>
+    <Color x:Key="TextPrimary">#ffffff</Color>
+    <Color x:Key="TextSecondary">#8fa3ad</Color>
 
     <SolidColorBrush x:Key="BGPrimary" Color="{StaticResource BackgroundPrimary}"/>
     <SolidColorBrush x:Key="BGSecondary" Color="{StaticResource BackgroundSecondary}"/>
@@ -19,4 +20,7 @@
     <SolidColorBrush x:Key="FGSecondary" Color="{StaticResource ForegroundSecondary}"/>
     <SolidColorBrush x:Key="FGTertiary" Color="{StaticResource ForegroundTertiary}"/>
     <SolidColorBrush x:Key="BPrimary" Color="{StaticResource BorderPrimary}"/>
+    <SolidColorBrush x:Key="A" Color="{StaticResource Accent}"/>
+    <SolidColorBrush x:Key="TPrimary" Color="{StaticResource TextPrimary}"/>
+    <SolidColorBrush x:Key="TSecondary" Color="{StaticResource TextSecondary}"/>
 </ResourceDictionary>

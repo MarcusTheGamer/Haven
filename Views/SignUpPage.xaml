@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Haven.Views.SignUpPage"
+             Title="SignUpPage"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
+             BackgroundColor="{StaticResource BackgroundPrimary}">
+    <Grid>
+        <HorizontalStackLayout VerticalOptions="Start" HorizontalOptions="Center" Margin="0,50,0,0">
+            <Label FontSize="35" FontAttributes="Bold" Text="Haven" HorizontalTextAlignment="Center" VerticalTextAlignment="End"/>
+            <Label FontSize="15" FontAttributes="Bold" Text="Smart Hub" HorizontalTextAlignment="Center" VerticalTextAlignment="End" Margin="0,0,0,6"/>
+        </HorizontalStackLayout>
+
+        <VerticalStackLayout VerticalOptions="Center" MaximumWidthRequest="250">
+            <Entry Placeholder="First Name" Text="{Binding FirstName}" Margin="0,0,0,10"/>
+            <Entry Placeholder="Email" Text="{Binding Email}" Keyboard="Email" Margin="0,0,0,10"/>
+            <Entry Placeholder="Password" Text="{Binding Password}" IsPassword="True" Margin="0,0,0,10"/>
+            <Entry Placeholder="Confirm Password" Text="{Binding ConfirmPassword}" IsPassword="True" Margin="0,0,0,10"/>
+
+            <Label Text="{Binding ErrorMessage}" TextColor="Red" FontSize="12" Margin="0,0,0,10"/>
+
+            <Button Text="Create Account" Command="{Binding SignUpCommand}" Margin="0,0,0,10"/>
+            <Button Text="Already have an account? Log in" Command="{Binding LoginCommand}" BorderWidth="0" Background="Transparent"/>
+
+            <ActivityIndicator IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}" Margin="0,10,0,0"/>
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>
