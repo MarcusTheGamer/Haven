@@ -29,6 +29,12 @@ namespace Haven
             builder.Services.AddTransient<SignUpViewModel>();
             builder.Services.AddTransient<SignUpPage>();
 
+            builder.Services.AddSingleton<BTService>();
+            builder.Services.AddSingleton<DeviceDiscoveryService>();
+
+            builder.Services.AddTransient<FindDevicesViewModel>();
+            builder.Services.AddTransient<FindDevicesPage>();
+
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
