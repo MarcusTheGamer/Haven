@@ -10,7 +10,7 @@
     <ShellContent
         ContentTemplate="{DataTemplate local:LoginPage}"
         Route="LoginPage" />
-
+    
     <TabBar>
         <ShellContent
             Title="Home"
@@ -26,6 +26,11 @@
             Title="Device Details"
             ContentTemplate="{DataTemplate local:DeviceDetailsPage}"
             Route="DeviceDetailsPage" />
+
+        <ShellContent
+            Title="Manage Family"
+            ContentTemplate="{DataTemplate local:ManageFamilyPage}"
+            Route="ManageFamilyPage" />
     </TabBar>
 
 </Shell>

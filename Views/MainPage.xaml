@@ -8,6 +8,12 @@
     x:Class="Haven.Views.MainPage"
     BackgroundColor="{StaticResource BackgroundPrimary}">
 
+    <ContentPage.ToolbarItems>
+        <ToolbarItem
+        IconImageSource="gear.svg"
+        Clicked="OnSettingsClicked" />
+    </ContentPage.ToolbarItems>
+
     <Border>
         <Border.Background>
             <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">

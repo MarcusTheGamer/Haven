@@ -1,0 +1,5 @@
+﻿<style name="Maui.SplashTheme" parent="...">
+	<item name="android:statusBarColor">@color/colorPrimary</item>
+	<item name="android:windowLightStatusBar">false</item>
+	<!-- true = dark icons -->
+</style>
