@@ -48,13 +48,13 @@ public partial class SignUpViewModel : ObservableObject
 
         if (string.IsNullOrWhiteSpace(Email))
         {
-            ErrorMessage = "Please enter your email.";
+            ErrorMessage = "Email missing.";
             return;
         }
 
         if (string.IsNullOrWhiteSpace(Password))
         {
-            ErrorMessage = "Please enter a password.";
+            ErrorMessage = "Password missing";
             return;
         }
 

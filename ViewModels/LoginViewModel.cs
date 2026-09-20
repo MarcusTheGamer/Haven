@@ -37,7 +37,7 @@ public partial class LoginViewModel : ObservableObject
         if (string.IsNullOrWhiteSpace(Email) ||
             string.IsNullOrWhiteSpace(Password))
         {
-            ErrorMessage = "Please enter your email and password.";
+            ErrorMessage = "Email or password missing.";
             return;
         }
 

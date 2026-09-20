@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-            x:Class="Haven.Views.DeviceDetailsPage"
-            Title="DeviceDetailsPage"
-            BackgroundColor="{StaticResource BackgroundPrimary}">
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Haven.Devices.DeviceDetails.BaseDetails">
     <Border>
         <Border.Background>
             <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
@@ -41,9 +39,10 @@
                             <Label Style="{StaticResource ContentText}" FontSize="13">08 / 09 / 2026</Label>
                             <Button Style="{StaticResource ContentText}" FontSize="13" Text="Check For Updates" WidthRequest="140" HorizontalOptions="Start" Margin="0,5,0,0"/>
                         </VerticalStackLayout>
+                        <ContentPresenter/>
                     </VerticalStackLayout>
                 </Border>
             </Grid>
         </ScrollView>
     </Border>
-</ContentPage>
+</ContentView>
