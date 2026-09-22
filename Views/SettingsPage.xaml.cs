@@ -1,9 +1,19 @@
-namespace Haven.Views;
+using Haven.Models;
 
+namespace Haven.Views;
 public partial class SettingsPage : ContentPage
 {
-	public SettingsPage()
-	{
-		InitializeComponent();
-	}
+    public SettingsPage()
+    {
+        InitializeComponent();
+    }
+
+    private async void OnOptionTapped(object sender, TappedEventArgs e)
+    {
+        if (sender is not Border border ||
+            border.BindingContext is not RouteItem option)
+            return;
+
+        await Shell.Current.GoToAsync(option.Route);
+    }
 }

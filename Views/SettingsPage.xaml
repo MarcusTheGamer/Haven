@@ -2,11 +2,38 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Haven.Views.SettingsPage"
-             Title="SettingsPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             xmlns:viewmodels="clr-namespace:Haven.ViewModels"
+             xmlns:models="clr-namespace:Haven.Models"
+             Title="Settings">
+    
+    <ContentPage.BindingContext>
+        <viewmodels:SettingsViewModel />
+    </ContentPage.BindingContext>
+    <Border>
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Color="{StaticResource BackgroundPrimary}" Offset="0.0" />
+                <GradientStop Color="{StaticResource BackgroundSecondary}" Offset="1.0" />
+            </LinearGradientBrush>
+        </Border.Background>
+        <ScrollView>
+            <VerticalStackLayout Padding="12" Spacing="12">
+                <CollectionView ItemsSource="{Binding Options}" SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:RouteItem">
+                            <Border Style="{StaticResource BorderBase}" Background="Transparent" Margin="0,0,0,10">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnOptionTapped" />
+                                </Border.GestureRecognizers>
+                                <Grid Padding="16" ColumnDefinitions="*,Auto">
+                                    <Label Text="{Binding Name}" Style="{StaticResource HeaderText}" VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="›" FontSize="32" TextColor="White" VerticalOptions="Center" Opacity="0.6" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Border>
 </ContentPage>

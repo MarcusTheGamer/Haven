@@ -29,8 +29,11 @@ namespace Haven
             builder.Services.AddTransient<SignUpViewModel>();
             builder.Services.AddTransient<SignUpPage>();
 
-            builder.Services.AddSingleton<BTService>();
-            builder.Services.AddSingleton<DeviceDiscoveryService>();
+            #if ANDROID
+                    builder.Services.AddSingleton<IWifiConnector, Haven.Platforms.Android.AndroidWifiConnector>();
+            #endif
+
+            builder.Services.AddTransient<WiFiProvisioningService>();
 
             builder.Services.AddTransient<FindDevicesViewModel>();
             builder.Services.AddTransient<FindDevicesPage>();

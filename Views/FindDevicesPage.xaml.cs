@@ -27,4 +27,9 @@ public partial class FindDevicesPage : ContentPage
 
         base.OnDisappearing();
     }
+
+    private async void OnAddClicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync(nameof(AddDevicePage));
+    }
 }

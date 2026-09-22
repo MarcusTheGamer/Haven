@@ -19,7 +19,7 @@
             <CollectionView ItemsSource="{Binding Devices}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Border>
+                        <Border Stroke="Transparent">
                             <Grid HeightRequest="35">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="35"/>
@@ -30,7 +30,7 @@
                                     <Image Source="unlock.png"/>
                                 </Border>
                                 <Label Text="{Binding Name}" Style="{StaticResource HeaderText}" FontSize="16" Grid.Column="1" Margin="5,0,0,0" VerticalTextAlignment="Center"/>
-                                <Button Text="Add" Style="{StaticResource HeaderText}" Background="{StaticResource BackgroundPrimary}" BorderWidth="2" Grid.Column="2"/>
+                                <Button Text="Add" Clicked="OnAddClicked" Style="{StaticResource HeaderText}" Background="{StaticResource BackgroundPrimary}" BorderWidth="2" Grid.Column="2"/>
                             </Grid>
                         </Border>
                     </DataTemplate>

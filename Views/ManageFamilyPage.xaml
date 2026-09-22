@@ -1,43 +1,52 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage 
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-    xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
-    xmlns:viewmodels="clr-namespace:Haven.ViewModels" 
-    xmlns:models="clr-namespace:Haven.Models" 
-    x:Class="Haven.Views.ManageFamilyPage" 
-    x:DataType="viewmodels:ManageFamilyViewModel" 
-    BackgroundColor="{StaticResource BackgroundPrimary}">
-
+            xmlns="http://schemas.microsoft.com/dotnet/2021/maui" 
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+            xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
+            xmlns:viewmodels="clr-namespace:Haven.ViewModels" 
+            xmlns:models="clr-namespace:Haven.Models"
+            x:Class="Haven.Views.ManageFamilyPage"
+            x:DataType="viewmodels:ManageFamilyViewModel"
+            BackgroundColor="{StaticResource BackgroundPrimary}"
+            Title="Manage Families">
     <ContentPage.BindingContext>
         <viewmodels:ManageFamilyViewModel />
     </ContentPage.BindingContext>
-    <Border>
-        <Border.Background>
-            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                <GradientStop Color="{StaticResource BackgroundPrimary}" Offset="0.0" />
-                <GradientStop Color="{StaticResource BackgroundSecondary}" Offset="1.0" />
-            </LinearGradientBrush>
-        </Border.Background>
-        <ScrollView>
-            <VerticalStackLayout Padding="12" Spacing="12">
-                <Label Text="MANAGE FAMILY" Style="{StaticResource BrickHeaderText}" Margin="8,12,8,4" />
-                <CollectionView ItemsSource="{Binding Options}" SelectionMode="None">
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate x:DataType="models:RouteItem">
-                            <Border Style="{StaticResource BrickSingle}" Margin="0,0,0,10">
-                                <Border.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="OnOptionTapped" />
-                                </Border.GestureRecognizers>
-                                <Grid Padding="16" ColumnDefinitions="*,Auto">
-                                    <Label Text="{Binding Name}" Style="{StaticResource BrickHeaderText}" VerticalOptions="Center" />
-                                    <Label Grid.Column="1" Text="›" FontSize="32" TextColor="White" VerticalOptions="Center" Opacity="0.6" />
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+    <Grid>
+        <Border Background="{StaticResource BackgroundPrimary}">
+            <ScrollView>
+                <VerticalStackLayout Padding="12" Spacing="12">
+                    <CollectionView ItemsSource="{Binding Options}" SelectionMode="None">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:RouteItem">
+                                <Border Style="{StaticResource BorderBase}" Background="Transparent" Margin="0,0,0,10">
+                                    <Grid>
+                                        <Grid Padding="16" ColumnDefinitions="*,Auto">
+                                            <Label Text="{Binding Name}" Style="{StaticResource HeaderText}" VerticalOptions="Center" />
+                                            <ImageButton Source="dots.png" Grid.Column="1" HeightRequest="20" WidthRequest="20" VerticalOptions="Center" Opacity="0.6" Clicked="OnDotsClicked" />
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </ScrollView>
+        </Border>
+        <Border x:Name="OptionsMenu" Style="{StaticResource BorderBase}" IsVisible="False" Background="{StaticResource BackgroundSecondary}" Padding="5" WidthRequest="180" HorizontalOptions="End" VerticalOptions="Start" Margin="0,70,20,0" ZIndex="10">
+            <VerticalStackLayout Spacing="5">
+                <Border Style="{StaticResource BorderBase}">
+                    <Button Text="Rename" Clicked="OnRenameClicked"/>
+                </Border>
+
+                <Border Style="{StaticResource BorderBase}">
+                    <Button Text="Manage Members" Clicked="OnManageMembersClicked" />
+                </Border>
+
+                <Border Style="{StaticResource BorderBase}">
+                    <Button Text="Leave Family" Clicked="OnLeaveFamilyClicked" />
+                </Border>
             </VerticalStackLayout>
-        </ScrollView>
-    </Border>
+        </Border>
+    </Grid>
 </ContentPage>

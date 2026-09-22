@@ -1,5 +1,3 @@
-using Haven.Models;
-
 namespace Haven.Views;
 
 public partial class ManageFamilyPage : ContentPage
@@ -9,12 +7,44 @@ public partial class ManageFamilyPage : ContentPage
         InitializeComponent();
     }
 
-    private async void OnOptionTapped(object sender, TappedEventArgs e)
+    private void OnDotsClicked(object sender, EventArgs e)
     {
-        if (sender is not Border border ||
-            border.BindingContext is not RouteItem option)
+        if (sender is ImageButton button &&
+            button.BindingContext is Haven.Models.RouteItem option)
+        {
+            OptionsMenu.BindingContext = option;
+        }
+
+        OptionsMenu.IsVisible = !OptionsMenu.IsVisible;
+    }
+
+    private void OnRenameClicked(object sender, EventArgs e)
+    {
+        if (OptionsMenu.BindingContext is not Haven.Models.RouteItem family)
             return;
 
-        await Shell.Current.GoToAsync(option.Route);
+        OptionsMenu.IsVisible = false;
+
+        // TODO: Rename family
+    }
+
+    private void OnManageMembersClicked(object sender, EventArgs e)
+    {
+        if (OptionsMenu.BindingContext is not Haven.Models.RouteItem family)
+            return;
+
+        OptionsMenu.IsVisible = false;
+
+        // TODO: Manage members
+    }
+
+    private void OnLeaveFamilyClicked(object sender, EventArgs e)
+    {
+        if (OptionsMenu.BindingContext is not Haven.Models.RouteItem family)
+            return;
+
+        OptionsMenu.IsVisible = false;
+
+        // TODO: Leave family
     }
 }

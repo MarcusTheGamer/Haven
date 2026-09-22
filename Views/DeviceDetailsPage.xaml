@@ -12,11 +12,7 @@
             </LinearGradientBrush>
         </Border.Background>
         <ScrollView>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+            <Grid RowDefinitions="Auto,*">
                 <Border StrokeShape="RoundRectangle 20" Margin="18,18,18,10">
                     <Grid>
                         <Image MinimumHeightRequest="150"/>

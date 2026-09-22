@@ -26,11 +26,6 @@
             Title="Device Details"
             ContentTemplate="{DataTemplate local:DeviceDetailsPage}"
             Route="DeviceDetailsPage" />
-
-        <ShellContent
-            Title="Manage Family"
-            ContentTemplate="{DataTemplate local:ManageFamilyPage}"
-            Route="ManageFamilyPage" />
     </TabBar>
 
 </Shell>

@@ -1,15 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Haven.Models;
 using Haven.Services;
 using System.Collections.ObjectModel;
+using HavenDeviceInfo = Haven.Models.DeviceInfo;
 
 namespace Haven.ViewModels;
 
 public partial class FindDevicesViewModel : ObservableObject
 {
-    private readonly DeviceDiscoveryService _discovery;
-    private readonly BTService _bt;
-
+    private readonly WiFiProvisioningService _wifi;
     private CancellationTokenSource? _searchCancellation;
 
     [ObservableProperty]
@@ -18,12 +16,11 @@ public partial class FindDevicesViewModel : ObservableObject
     [ObservableProperty]
     private bool isProvisioning;
 
-    public ObservableCollection<Models.DeviceInfo> Devices { get; } = new();
+    public ObservableCollection<HavenDeviceInfo> Devices { get; } = new();
 
-    public FindDevicesViewModel(DeviceDiscoveryService discovery, BTService bt)
+    public FindDevicesViewModel(WiFiProvisioningService wifi)
     {
-        _discovery = discovery;
-        _bt = bt;
+        _wifi = wifi;
     }
 
     public async Task StartSearchingAsync()
@@ -32,32 +29,52 @@ public partial class FindDevicesViewModel : ObservableObject
             return;
 
         IsSearching = true;
+
+        _searchCancellation?.Cancel();
+        _searchCancellation?.Dispose();
         _searchCancellation = new CancellationTokenSource();
 
         Devices.Clear();
 
         try
         {
-            while (!_searchCancellation.Token.IsCancellationRequested)
+            Console.WriteLine("[FindDevices] Starting discovery.");
+
+            var networks = await _wifi.DiscoverDevicesAsync();
+
+            foreach (var ssid in networks)
             {
-                var devices =
-                    await _discovery.DiscoverDevicesAsync(
-                        TimeSpan.FromSeconds(3));
+                if (_searchCancellation.Token.IsCancellationRequested)
+                    break;
 
-                foreach (var device in devices)
+                var device = CreateDeviceFromSsid(ssid);
+
+                if (device == null)
+                    continue;
+
+                if (!Devices.Any(x =>
+                    string.Equals(
+                        x.Id,
+                        device.Id,
+                        StringComparison.OrdinalIgnoreCase)))
                 {
-                    if (!Devices.Any(x => x.Id == device.Id))
-                        Devices.Add(device);
-                }
+                    Devices.Add(device);
 
-                await Task.Delay(
-                    500,
-                    _searchCancellation.Token);
+                    Console.WriteLine(
+                        $"[FindDevices] Added {device.Name} ({device.Id}).");
+                }
             }
+
+            Console.WriteLine(
+                $"[FindDevices] Discovery complete. {Devices.Count} device(s) found.");
         }
-        catch (OperationCanceledException ex)
+        catch (OperationCanceledException)
         {
-            Console.WriteLine(ex);
+            Console.WriteLine("[FindDevices] Discovery cancelled.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[FindDevices] Discovery failed: {ex}");
         }
         finally
         {
@@ -65,14 +82,58 @@ public partial class FindDevicesViewModel : ObservableObject
         }
     }
 
+    private static HavenDeviceInfo? CreateDeviceFromSsid(string ssid)
+    {
+        if (!ssid.StartsWith(
+                "HAVEN-",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        var parts = ssid.Split('-');
+
+        if (parts.Length < 3)
+            return null;
+
+        var type = parts[1];
+        var id = parts[2];
+
+        return new HavenDeviceInfo
+        {
+            Id = id,
+            Type = type,
+            Name = type
+        };
+    }
+
     public void StopSearching()
     {
+        Console.WriteLine("[FindDevices] Stopping discovery.");
+
         _searchCancellation?.Cancel();
         _searchCancellation?.Dispose();
         _searchCancellation = null;
+
+        IsSearching = false;
     }
 
-    public async Task<bool> ProvisionDeviceAsync(Models.DeviceInfo device, string ssid, string password)
+    public async Task<bool> ConnectToDeviceAsync(string ssid)
+    {
+        return await _wifi.ConnectToDeviceApAsync(ssid);
+    }
+
+    public async Task<HavenDeviceInfo?> ReadConnectedDeviceInfoAsync(
+        CancellationToken cancellationToken = default)
+    {
+        return await _wifi.ReadDeviceInfoAsync(
+            WiFiProvisioningService.DefaultDeviceIp,
+            cancellationToken);
+    }
+
+    public async Task<bool> ProvisionDeviceAsync(
+        string ssid,
+        string password)
     {
         if (IsProvisioning)
             return false;
@@ -81,8 +142,7 @@ public partial class FindDevicesViewModel : ObservableObject
 
         try
         {
-            return await _bt.ProvisionDeviceAsync(
-                device.BleDevice,
+            return await _wifi.ProvisionDeviceAsync(
                 ssid,
                 password);
         }
@@ -90,5 +150,15 @@ public partial class FindDevicesViewModel : ObservableObject
         {
             IsProvisioning = false;
         }
+    }
+
+    public async Task<string?> GetProvisioningStatusAsync()
+    {
+        return await _wifi.GetStatusAsync();
+    }
+
+    public void DisconnectFromDevice()
+    {
+        _wifi.DisconnectFromDeviceAp();
     }
 }
