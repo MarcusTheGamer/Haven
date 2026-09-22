@@ -10,22 +10,24 @@
     <ShellContent
         ContentTemplate="{DataTemplate local:LoginPage}"
         Route="LoginPage" />
-    
+
     <TabBar>
         <ShellContent
-            Title="Home"
-            ContentTemplate="{DataTemplate local:MainPage}"
-            Route="MainPage" />
-
-        <ShellContent
             Title="Find Device"
+            Icon="scan.png"
             ContentTemplate="{DataTemplate local:FindDevicesPage}"
             Route="FindDevicesPage" />
 
         <ShellContent
-            Title="Device Details"
-            ContentTemplate="{DataTemplate local:DeviceDetailsPage}"
-            Route="DeviceDetailsPage" />
-    </TabBar>
+            Title="Home"
+            Icon="home.png"
+            ContentTemplate="{DataTemplate local:MainPage}"
+            Route="MainPage" />
 
+        <ShellContent
+            Title="Profile"
+            Icon="user.png"
+            ContentTemplate="{DataTemplate local:ProfilePage}"
+            Route="ProfilePage"/>
+    </TabBar>
 </Shell>

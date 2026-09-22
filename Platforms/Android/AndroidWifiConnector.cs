@@ -215,5 +215,30 @@ public class AndroidWifiConnector : IWifiConnector
             _onUnavailable();
         }
     }
+    public async Task<string?> GetCurrentSsidAsync()
+    {
+        var status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
+
+        if (status != PermissionStatus.Granted)
+        {
+            status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
+
+            if (status != PermissionStatus.Granted)
+            {
+                Console.WriteLine("[WiFi] Location permission was not granted.");
+                return null;
+            }
+        }
+
+        var context = global::Android.App.Application.Context;
+        var wifiManager = (WifiManager)context.GetSystemService(Context.WifiService)!;
+
+        var ssid = wifiManager.ConnectionInfo?.SSID;
+
+        if (string.IsNullOrWhiteSpace(ssid) || ssid == "<unknown ssid>")
+            return null;
+
+        return ssid.Trim('"');
+    }
 }
 #endif

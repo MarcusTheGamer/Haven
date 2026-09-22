@@ -16,6 +16,17 @@ public class WiFiProvisioningService
         _wifiConnector = wifiConnector;
     }
 
+    public async Task<string?> GetCurrentHomeSsidAsync()
+    {
+        Console.WriteLine("[WiFiProvisioningService] Reading current Wi-Fi SSID...");
+
+        var ssid = await _wifiConnector.GetCurrentSsidAsync();
+
+        Console.WriteLine($"[WiFiProvisioningService] Current SSID: {ssid ?? "(none)"}");
+
+        return ssid;
+    }
+
     public async Task<List<string>> DiscoverDevicesAsync()
     {
         Console.WriteLine(
@@ -186,4 +197,5 @@ public interface IWifiConnector
     Task<List<string>> ScanForHavenNetworksAsync();
     Task<bool> ConnectToNetworkAsync(string ssid, string password);
     void DisconnectAndRestoreHomeWifi();
+    Task<string?> GetCurrentSsidAsync();
 }

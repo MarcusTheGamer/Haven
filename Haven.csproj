@@ -82,6 +82,18 @@
 	  <MauiXaml Update="Devices\DeviceBricks\BaseBrick.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Devices\DeviceBricks\ClimateBrick.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Devices\DeviceBricks\LockBrick.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Devices\DeviceBricks\ThermostatBrick.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Devices\DeviceBricks\ToggleBrick.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Devices\DeviceDetails\BaseDetails.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -106,6 +118,9 @@
 	  <MauiXaml Update="Views\ManageFamilyPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\ProfilePage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\SettingsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>

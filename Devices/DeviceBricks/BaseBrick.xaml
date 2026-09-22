@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Haven.Devices.DeviceBricks.BaseBrick">
-    <Border Style="{StaticResource BrickSingle}">
+             x:Class="Haven.Devices.DeviceBricks.BaseBrick"
+             x:Name="root">
+    <Border Style="{Binding BrickStyle, Source={x:Reference root}}">
         <VerticalStackLayout Style="{StaticResource BrickVertStackLayout}">
             <HorizontalStackLayout Style="{StaticResource BrickHorzStackLayout}">
                 <Border Style="{StaticResource IconBorder}">
-                    <Image Source="sun.png"/>
+                    <Image Source="{Binding IconSource, Source={x:Reference root}}"/>
                 </Border>
-                <Label Style="{StaticResource BrickHeaderText}">Living Room</Label>
+                <Label Style="{StaticResource BrickHeaderText}" Text="{Binding Title, Source={x:Reference root}}"/>
             </HorizontalStackLayout>
-            <ContentPresenter/>
+            <ContentView Content="{Binding BrickContent, Source={x:Reference root}}"/>
         </VerticalStackLayout>
     </Border>
 </ContentView>

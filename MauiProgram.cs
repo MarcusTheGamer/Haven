@@ -34,6 +34,11 @@ namespace Haven
             #endif
 
             builder.Services.AddTransient<WiFiProvisioningService>();
+            builder.Services.AddSingleton<IDeviceRegistry, DeviceRegistry>();
+            builder.Services.AddSingleton<IDeviceCommunicationService, DeviceCommunicationService>();
+            
+            builder.Services.AddTransient<AddDeviceViewModel>();
+            builder.Services.AddTransient<AddDevicePage>();
 
             builder.Services.AddTransient<FindDevicesViewModel>();
             builder.Services.AddTransient<FindDevicesPage>();

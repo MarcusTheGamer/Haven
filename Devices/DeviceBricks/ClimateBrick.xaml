@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:bricks="clr-namespace:Haven.Devices.DeviceBricks"
+             x:Class="Haven.Devices.DeviceBricks.ClimateBrick"
+             x:Name="root">
+    <bricks:BaseBrick
+        IconSource="{Binding IconSource, Source={x:Reference root}}"
+        Title="{Binding Title, Source={x:Reference root}}">
+        <VerticalStackLayout>
+            <HorizontalStackLayout>
+                <Label Style="{StaticResource ImportantText}" Text="{Binding Temperature, Source={x:Reference root}}"/>
+                <Label Style="{StaticResource ContentTextBoldBottom}">°C</Label>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout>
+                <Label Style="{StaticResource ImportantText}" Text="{Binding Humidity, Source={x:Reference root}}"/>
+                <Label Style="{StaticResource ContentTextBoldBottom}">%</Label>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </bricks:BaseBrick>
+</ContentView>

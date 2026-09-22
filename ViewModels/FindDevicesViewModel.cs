@@ -103,7 +103,8 @@ public partial class FindDevicesViewModel : ObservableObject
         {
             Id = id,
             Type = type,
-            Name = type
+            Name = type,
+            ApSsid = ssid
         };
     }
 
