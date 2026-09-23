@@ -1,6 +1,4 @@
-﻿using Plugin.BLE.Abstractions.Contracts;
-
-namespace Haven.Models;
+﻿namespace Haven.Models;
 
 public class DeviceInfo
 {

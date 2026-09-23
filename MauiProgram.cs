@@ -22,6 +22,7 @@ namespace Haven
                 });
 
             builder.Services.AddSingleton<SupabaseService>();
+            builder.Services.AddSingleton<IAuthService>(sp => sp.GetRequiredService<SupabaseService>());
 
             builder.Services.AddTransient<LoginViewModel>();
             builder.Services.AddTransient<LoginPage>();
@@ -34,6 +35,7 @@ namespace Haven
             #endif
 
             builder.Services.AddTransient<WiFiProvisioningService>();
+            builder.Services.AddTransient<DeviceNetworkSweepService>();
             builder.Services.AddSingleton<IDeviceRegistry, DeviceRegistry>();
             builder.Services.AddSingleton<IDeviceCommunicationService, DeviceCommunicationService>();
             
@@ -42,6 +44,9 @@ namespace Haven
 
             builder.Services.AddTransient<FindDevicesViewModel>();
             builder.Services.AddTransient<FindDevicesPage>();
+
+            builder.Services.AddTransient<ProfileViewModel>();
+            builder.Services.AddTransient<ProfilePage>();
 
 #if DEBUG
             builder.Logging.AddDebug();

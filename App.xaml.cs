@@ -1,14 +1,16 @@
-﻿namespace Haven;
+﻿using Haven.Services;
+
+namespace Haven;
 
 public partial class App : Application
 {
-    private readonly Services.SupabaseService _supabase;
+    private readonly IAuthService _authService;
 
-    public App(Services.SupabaseService supabase)
+public App(IAuthService authService)
     {
         InitializeComponent();
 
-        _supabase = supabase;
+        _authService = authService;
     }
 
     protected override Window CreateWindow(IActivationState? activationState)
@@ -22,9 +24,9 @@ public partial class App : Application
 
     private async Task InitializeAsync()
     {
-        await _supabase.InitializeAsync();
+        await _authService.InitializeAsync();
 
-        if (_supabase.IsLoggedIn())
+        if (_authService.IsLoggedIn())
         {
             await Shell.Current.GoToAsync("//MainPage");
         }

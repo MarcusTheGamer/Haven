@@ -7,7 +7,7 @@ namespace Haven.ViewModels;
 
 public partial class SignUpViewModel : ObservableObject
 {
-    private readonly Services.SupabaseService _supabase;
+    private readonly Services.IAuthService _supabase;
 
     [ObservableProperty]
     private string firstName = string.Empty;
@@ -27,7 +27,7 @@ public partial class SignUpViewModel : ObservableObject
     [ObservableProperty]
     private string errorMessage = string.Empty;
 
-    public SignUpViewModel(Services.SupabaseService supabase)
+    public SignUpViewModel(Services.IAuthService supabase)
     {
         _supabase = supabase;
     }

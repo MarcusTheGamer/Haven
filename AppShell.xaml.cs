@@ -15,5 +15,6 @@ public partial class AppShell : Shell
         Routing.RegisterRoute(nameof(ManageFamilyPage), typeof(ManageFamilyPage));
         Routing.RegisterRoute(nameof(CreateFamilyPage), typeof(CreateFamilyPage));
         Routing.RegisterRoute(nameof(InviteToFamilyPage), typeof(InviteToFamilyPage));
+        Routing.RegisterRoute(nameof(DeviceDetailsPage), typeof(DeviceDetailsPage));
     }
 }

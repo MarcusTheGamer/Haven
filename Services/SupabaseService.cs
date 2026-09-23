@@ -1,10 +1,10 @@
-﻿using Haven.Models;
+using Haven.Models;
 using Supabase;
 using Supabase.Gotrue;
 
 namespace Haven.Services;
 
-public class SupabaseService
+public class SupabaseService : IAuthService
 {
     private readonly Supabase.Client _client;
 
@@ -76,5 +76,32 @@ public class SupabaseService
     public async Task LogoutAsync()
     {
         await _client.Auth.SignOut();
+    }
+
+    public Task<UserProfile?> GetCurrentUserAsync()
+    {
+        var user = _client.Auth.CurrentUser;
+
+        if (user == null)
+            return Task.FromResult<UserProfile?>(null);
+
+        var firstName = string.Empty;
+
+        if (user.UserMetadata != null &&
+            user.UserMetadata.TryGetValue("first_name", out var value) &&
+            value != null)
+        {
+            firstName = value.ToString() ?? string.Empty;
+        }
+
+        var profile = new UserProfile
+        {
+            Id = user.Id ?? string.Empty,
+            Email = user.Email ?? string.Empty,
+            FirstName = firstName,
+            CreatedAt = user.CreatedAt
+        };
+
+        return Task.FromResult<UserProfile?>(profile);
     }
 }

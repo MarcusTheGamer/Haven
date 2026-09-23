@@ -16,7 +16,7 @@
             <Label Style="{StaticResource ContentText}" Text="Enter the Wi-Fi network this device should join."/>
 
             <Entry Placeholder="Wi-Fi name" Text="{Binding HomeSsid}"/>
-            <Entry Placeholder="Wi-Fi password" Text="{Binding HomePassword}" IsPassword="True"/>
+            <Entry Placeholder="Wi-Fi password (Leave blank if none)" Text="{Binding HomePassword}" IsPassword="True"/>
 
             <Button Text="Connect Device" Clicked="OnConnectClicked"/>
 

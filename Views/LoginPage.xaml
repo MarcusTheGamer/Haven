@@ -16,7 +16,7 @@
             <Entry Style="{StaticResource AuthPageElement}" Placeholder="Password" Text="{Binding Password}" IsPassword="True"/>
             <Label Text="{Binding ErrorMessage}" TextColor="Red" FontSize="12"/>
             <Button Style="{StaticResource AuthPageElement}" Text="Login" Command="{Binding LoginCommand}"/>
-            <Button Text="Don't have an account yet? Sign up" Command="{Binding SignUpCommand}" BorderWidth="0" Background="Transparent"/>
+            <Button Text="Don't have an account yet? Sign up" FontSize="12" Command="{Binding SignUpCommand}" BorderWidth="0" Background="Transparent"/>
             <ActivityIndicator IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}"/>
         </VerticalStackLayout>
     </Grid>

@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Haven.Services;
-using Plugin.BLE.Abstractions;
 using HavenDeviceInfo = Haven.Models.DeviceInfo;
 
 namespace Haven.ViewModels;
@@ -9,6 +8,7 @@ public partial class AddDeviceViewModel : ObservableObject, IQueryAttributable
 {
     private readonly WiFiProvisioningService _wifi;
     private readonly IDeviceRegistry _registry;
+    private readonly DeviceNetworkSweepService _sweep;
 
     [ObservableProperty] private string apSsid = string.Empty;
     [ObservableProperty] private string deviceName = string.Empty;
@@ -19,10 +19,11 @@ public partial class AddDeviceViewModel : ObservableObject, IQueryAttributable
     [ObservableProperty] private bool isBusy;
     [ObservableProperty] private string statusMessage = string.Empty;
 
-    public AddDeviceViewModel(WiFiProvisioningService wifi, IDeviceRegistry registry)
+    public AddDeviceViewModel(WiFiProvisioningService wifi, IDeviceRegistry registry, DeviceNetworkSweepService sweep)
     {
         _wifi = wifi;
         _registry = registry;
+        _sweep = sweep;
     }
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
@@ -46,7 +47,7 @@ public partial class AddDeviceViewModel : ObservableObject, IQueryAttributable
         if (IsBusy)
             return false;
 
-        if (string.IsNullOrWhiteSpace(HomeSsid) || string.IsNullOrWhiteSpace(HomePassword))
+        if (string.IsNullOrWhiteSpace(HomeSsid))
         {
             StatusMessage = "Enter your Wi-Fi name and password.";
             return false;
@@ -68,23 +69,37 @@ public partial class AddDeviceViewModel : ObservableObject, IQueryAttributable
             var info = await _wifi.ReadDeviceInfoAsync();
 
             StatusMessage = "Sending your Wi-Fi details to the device...";
-            if (!await _wifi.ProvisionDeviceAsync(HomeSsid, HomePassword))
+            var provisioned = await _wifi.ProvisionDeviceAsync(HomeSsid, HomePassword);
+
+            // Either way, we're done talking to the device's own setup AP —
+            // hop back to the home network now, since the sweep below has
+            // to run FROM the home network to find the device on it.
+            _wifi.DisconnectFromDeviceAp();
+
+            if (!provisioned)
             {
                 StatusMessage = "Device rejected the Wi-Fi details.";
                 return false;
             }
 
+            var expectedId = info?.Id ?? DeviceId;
+
             StatusMessage = "Waiting for the device to join your network...";
-            await Task.Delay(TimeSpan.FromSeconds(16));
+            var foundIp = await _sweep.FindDeviceIpAsync(expectedId);
 
             _registry.Register(new HavenDeviceInfo
             {
-                Id = info?.Id ?? DeviceId,
+                Id = expectedId,
                 Type = info?.Type ?? DeviceType,
-                Name = info?.Name ?? DeviceName
+                Name = info?.Name ?? DeviceName,
+                IpAddress = foundIp ?? string.Empty,
+                ApSsid = ApSsid
             });
 
-            StatusMessage = "Device added.";
+            StatusMessage = foundIp != null
+                ? "Device added."
+                : "Device added, but couldn't be found on your network yet — you can retry from device settings.";
+
             return true;
         }
         catch (Exception ex)

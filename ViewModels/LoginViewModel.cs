@@ -7,7 +7,7 @@ namespace Haven.ViewModels;
 
 public partial class LoginViewModel : ObservableObject
 {
-    private readonly Services.SupabaseService _supabase;
+    private readonly Services.IAuthService _supabase;
 
     [ObservableProperty]
     private string email = string.Empty;
@@ -21,7 +21,7 @@ public partial class LoginViewModel : ObservableObject
     [ObservableProperty]
     private string errorMessage = string.Empty;
 
-    public LoginViewModel(Services.SupabaseService supabase)
+    public LoginViewModel(Services.IAuthService supabase)
     {
         _supabase = supabase;
     }

@@ -25,6 +25,9 @@
             <Grid x:Name="DeviceList" Margin="12" ColumnDefinitions="1*,1*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
 
                 <Border Style="{StaticResource BrickDoubleSlim}">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="Brick_Tapped"/>
+                    </Border.GestureRecognizers>
                     <VerticalStackLayout Style="{StaticResource BrickVertStackLayout}">
                         <HorizontalStackLayout Style="{StaticResource BrickHorzStackLayout}">
                             <Border Style="{StaticResource IconBorder}">
