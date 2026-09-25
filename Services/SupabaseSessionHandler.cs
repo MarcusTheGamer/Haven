@@ -17,9 +17,7 @@ public class SupabaseSessionHandler : IGotrueSessionPersistence<Session>
     public Session? LoadSession()
     {
         var json = Preferences.Get(SessionKey, string.Empty);
-
-        if (string.IsNullOrEmpty(json))
-            return null;
+        if (string.IsNullOrEmpty(json)) return null;
 
         try
         {
@@ -27,13 +25,11 @@ public class SupabaseSessionHandler : IGotrueSessionPersistence<Session>
         }
         catch
         {
+            // clear invalid session
             Preferences.Remove(SessionKey);
             return null;
         }
     }
 
-    public void DestroySession()
-    {
-        Preferences.Remove(SessionKey);
-    }
+    public void DestroySession() => Preferences.Remove(SessionKey);
 }

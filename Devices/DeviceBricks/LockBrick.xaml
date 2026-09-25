@@ -4,10 +4,9 @@
              xmlns:bricks="clr-namespace:Haven.Devices.DeviceBricks"
              x:Class="Haven.Devices.DeviceBricks.LockBrick"
              x:Name="root">
-    <bricks:BaseBrick
-        IconSource="{Binding IconSource, Source={x:Reference root}}"
+    <bricks:BaseBrick x:Name="Host"
         Title="{Binding Title, Source={x:Reference root}}"
         BrickStyle="{StaticResource BrickDoubleSlim}">
-        <Label Style="{StaticResource ContentText}" Text="{Binding StatusText, Source={x:Reference root}}"/>
+        <Label x:Name="StatusLabel" Style="{StaticResource ContentText}"/>
     </bricks:BaseBrick>
 </ContentView>

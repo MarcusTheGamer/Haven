@@ -11,6 +11,10 @@
         ContentTemplate="{DataTemplate local:LoginPage}"
         Route="LoginPage" />
 
+    <ShellContent
+        ContentTemplate="{DataTemplate local:FamilySetupPage}"
+        Route="FamilySetupPage" />
+
     <TabBar>
         <ShellContent
             Title="Find Device"

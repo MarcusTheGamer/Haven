@@ -1,14 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Supabase.Postgrest.Attributes;
+using Supabase.Postgrest.Models;
 
-namespace Haven.Models
+namespace Haven.Models;
+
+[Table("families")]
+public class Family : BaseModel
 {
-    class Family
-    {
-        public string Name { get; set; } = string.Empty;
-        public string Owner { get; set; } = string.Empty;
-    }
+    [PrimaryKey("id", false)]
+    public long Id { get; set; }
+
+    [Column("name")]
+    public string Name { get; set; } = string.Empty;
+
+    [Column("owner_id")]
+    public Guid OwnerId { get; set; }
 }

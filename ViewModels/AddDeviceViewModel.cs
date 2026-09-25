@@ -36,6 +36,7 @@ public partial class AddDeviceViewModel : ObservableObject, IQueryAttributable
 
     public async Task CaptureHomeNetworkAsync()
     {
+        // remember the home network before connecting to the device
         var ssid = await _wifi.GetCurrentHomeSsidAsync();
 
         if (!string.IsNullOrEmpty(ssid))
@@ -44,8 +45,7 @@ public partial class AddDeviceViewModel : ObservableObject, IQueryAttributable
 
     public async Task<bool> ProvisionAsync()
     {
-        if (IsBusy)
-            return false;
+        if (IsBusy) return false;
 
         if (string.IsNullOrWhiteSpace(HomeSsid))
         {
@@ -59,34 +59,47 @@ public partial class AddDeviceViewModel : ObservableObject, IQueryAttributable
         {
             StatusMessage = "Connecting to device...";
 
+            // connect to the device's temporary Wi-Fi
             if (!await _wifi.ConnectToDeviceApAsync(ApSsid))
             {
                 StatusMessage = "Couldn't connect to the device's Wi-Fi.";
                 return false;
             }
 
+            // read the device's real identity before provisioning
             StatusMessage = "Reading device info...";
             var info = await _wifi.ReadDeviceInfoAsync();
 
+            // send the home Wi-Fi credentials to the device
             StatusMessage = "Sending your Wi-Fi details to the device...";
-            var provisioned = await _wifi.ProvisionDeviceAsync(HomeSsid, HomePassword);
+            var accepted = await _wifi.ProvisionDeviceAsync(HomeSsid, HomePassword);
 
-            // Either way, we're done talking to the device's own setup AP —
-            // hop back to the home network now, since the sweep below has
-            // to run FROM the home network to find the device on it.
-            _wifi.DisconnectFromDeviceAp();
-
-            if (!provisioned)
+            if (!accepted)
             {
                 StatusMessage = "Device rejected the Wi-Fi details.";
                 return false;
             }
 
+            // wait while the device switches to the home network
+            StatusMessage = "Waiting for the device to join your Wi-Fi...";
+            var joinResult = await PollProvisionStatusAsync();
+
+            // leave the device AP and return to the home network
+            _wifi.DisconnectFromDeviceAp();
+
+            if (joinResult == false)
+            {
+                StatusMessage = "The device couldn't join that Wi-Fi network. Double-check the password and try again.";
+                return false;
+            }
+
             var expectedId = info?.Id ?? DeviceId;
 
-            StatusMessage = "Waiting for the device to join your network...";
+            // search the home network for the newly connected device
+            StatusMessage = "Looking for the device on your network...";
             var foundIp = await _sweep.FindDeviceIpAsync(expectedId);
 
+            // save the device and its new home-network address
             _registry.Register(new HavenDeviceInfo
             {
                 Id = expectedId,
@@ -98,20 +111,47 @@ public partial class AddDeviceViewModel : ObservableObject, IQueryAttributable
 
             StatusMessage = foundIp != null
                 ? "Device added."
-                : "Device added, but couldn't be found on your network yet — you can retry from device settings.";
+                : "Device joined your Wi-Fi, but couldn't be found on your network yet — you can retry from device settings.";
 
             return true;
         }
-        catch (Exception ex)
+        catch
         {
-            Console.WriteLine($"[AddDeviceViewModel] Provisioning failed: {ex}");
             StatusMessage = "Something went wrong adding the device.";
             return false;
         }
         finally
         {
+            // make sure we leave the setup network
             _wifi.DisconnectFromDeviceAp();
             IsBusy = false;
         }
+    }
+
+    // wait for the device to finish connecting
+    private async Task<bool?> PollProvisionStatusAsync()
+    {
+        var deadline = DateTime.UtcNow.AddSeconds(18);
+        var sawAnyResponse = false;
+
+        while (DateTime.UtcNow < deadline)
+        {
+            var status = await _wifi.GetStatusAsync();
+
+            if (status != null)
+                sawAnyResponse = true;
+
+            if (string.Equals(status, "SUCCESS", StringComparison.OrdinalIgnoreCase))
+                return true;
+
+            if (string.Equals(status, "FAILED", StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            // give the device time to connect
+            await Task.Delay(1000);
+        }
+
+        // no response usually means the device already left its AP
+        return sawAnyResponse ? false : null;
     }
 }

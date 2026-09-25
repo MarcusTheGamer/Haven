@@ -1,12 +1,36 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.Maui.Controls"
+             xmlns:viewmodels="clr-namespace:Haven.ViewModels"
              x:Class="Haven.Views.InviteToFamilyPage"
-             Title="InviteToFamilyPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             x:DataType="viewmodels:InviteToFamilyViewModel"
+             Title="Join a Family"
+             Shell.TabBarIsVisible="False"
+             BackgroundColor="Black">
+
+    <Grid>
+        <zxing:CameraBarcodeReaderView x:Name="CameraView" IsDetecting="True" IsTorchOn="False" BarcodesDetected="OnBarcodesDetected" />
+
+        <!-- Dim mask with a clear viewfinder box cut out of the middle -->
+        <Grid RowDefinitions="*,260,*" ColumnDefinitions="*,260,*" InputTransparent="True">
+            <BoxView Grid.Row="0" Grid.ColumnSpan="3" Color="Black" Opacity="0.55" />
+            <BoxView Grid.Row="2" Grid.ColumnSpan="3" Color="Black" Opacity="0.55" />
+            <BoxView Grid.Row="1" Grid.Column="0" Color="Black" Opacity="0.55" />
+            <BoxView Grid.Row="1" Grid.Column="2" Color="Black" Opacity="0.55" />
+
+            <Border Grid.Row="1" Grid.Column="1"
+                    Stroke="{StaticResource Accent}"
+                    StrokeThickness="3"
+                    StrokeShape="RoundRectangle 20"
+                    Background="Transparent" />
+        </Grid>
+
+        <VerticalStackLayout VerticalOptions="Start" HorizontalOptions="Fill" Padding="20,50,20,0" Spacing="10">
+            <Label Text="{Binding StatusMessage}" TextColor="White" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" Color="{StaticResource Accent}" />
+        </VerticalStackLayout>
+
+        <Button Text="Cancel" Clicked="OnCancelClicked" VerticalOptions="End" HorizontalOptions="Center" Margin="0,0,0,40" WidthRequest="160" />
+    </Grid>
 </ContentPage>

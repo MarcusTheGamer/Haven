@@ -1,36 +1,50 @@
+using Haven.Models;
+using Haven.ViewModels;
+
 namespace Haven.Views;
 
 public partial class ManageFamilyPage : ContentPage
 {
-    public ManageFamilyPage()
+    private readonly ManageFamilyViewModel _viewModel;
+
+    public ManageFamilyPage(ManageFamilyViewModel viewModel)
     {
         InitializeComponent();
+
+        _viewModel = viewModel;
+        BindingContext = viewModel;
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        await _viewModel.LoadCommand.ExecuteAsync(null);
     }
 
     private void OnDotsClicked(object sender, EventArgs e)
     {
-        if (sender is ImageButton button &&
-            button.BindingContext is Haven.Models.RouteItem option)
-        {
-            OptionsMenu.BindingContext = option;
-        }
+        if (sender is ImageButton button && button.BindingContext is Family family)
+            OptionsMenu.BindingContext = family;
 
         OptionsMenu.IsVisible = !OptionsMenu.IsVisible;
     }
 
-    private void OnRenameClicked(object sender, EventArgs e)
+    private async void OnRenameClicked(object sender, EventArgs e)
     {
-        if (OptionsMenu.BindingContext is not Haven.Models.RouteItem family)
+        if (OptionsMenu.BindingContext is not Family family)
             return;
 
         OptionsMenu.IsVisible = false;
 
-        // TODO: Rename family
+        var newName = await DisplayPromptAsync("Rename Family", "New name", initialValue: family.Name);
+
+        if (!string.IsNullOrWhiteSpace(newName))
+            await _viewModel.RenameAsync(family, newName.Trim());
     }
 
     private void OnManageMembersClicked(object sender, EventArgs e)
     {
-        if (OptionsMenu.BindingContext is not Haven.Models.RouteItem family)
+        if (OptionsMenu.BindingContext is not Family family)
             return;
 
         OptionsMenu.IsVisible = false;
@@ -38,13 +52,26 @@ public partial class ManageFamilyPage : ContentPage
         // TODO: Manage members
     }
 
-    private void OnLeaveFamilyClicked(object sender, EventArgs e)
+    private async void OnInviteClicked(object sender, EventArgs e)
     {
-        if (OptionsMenu.BindingContext is not Haven.Models.RouteItem family)
+        if (OptionsMenu.BindingContext is not Family family)
             return;
 
         OptionsMenu.IsVisible = false;
 
-        // TODO: Leave family
+        await Shell.Current.GoToAsync($"{nameof(FamilyQrCodePage)}?FamilyId={family.Id}");
+    }
+
+    private async void OnLeaveFamilyClicked(object sender, EventArgs e)
+    {
+        if (OptionsMenu.BindingContext is not Family family)
+            return;
+
+        OptionsMenu.IsVisible = false;
+
+        var confirmed = await DisplayAlert("Leave Family", $"Leave \"{family.Name}\"?", "Leave", "Cancel");
+
+        if (confirmed)
+            await _viewModel.LeaveAsync(family);
     }
 }

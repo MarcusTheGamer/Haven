@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:bricks="clr-namespace:Haven.Devices.DeviceBricks"
+             x:Class="Haven.Devices.DeviceBricks.CurtainBrick"
+             x:Name="root">
+    <bricks:BaseBrick
+        IconSource="dots.png"
+        Title="{Binding Title, Source={x:Reference root}}">
+        <VerticalStackLayout Spacing="6">
+            <Slider x:Name="PositionSlider" Maximum="100" DragCompleted="OnPositionCommitted"/>
+            <HorizontalStackLayout Spacing="8">
+                <Button Style="{StaticResource ContentText}" Text="Open" Clicked="OnOpenClicked"/>
+                <Button Style="{StaticResource ContentText}" Text="Close" Clicked="OnCloseClicked"/>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </bricks:BaseBrick>
+</ContentView>

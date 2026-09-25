@@ -1,6 +1,7 @@
 ﻿using Android.App;
 using Android.Content.PM;
 using Android.OS;
+using Android.Runtime;
 using AndroidX.Core.View;
 
 namespace Haven
@@ -16,6 +17,19 @@ namespace Haven
             // dark background -> light icons/text
             if (Window is not null)
                 WindowCompat.GetInsetsController(Window, Window.DecorView).AppearanceLightStatusBars = false;
+        }
+
+        public override void OnRequestPermissionsResult(
+            int requestCode,
+            string[] permissions,
+            [GeneratedEnum] Permission[] grantResults)
+        {
+            Microsoft.Maui.ApplicationModel.Platform.OnRequestPermissionsResult(
+                requestCode,
+                permissions,
+                grantResults);
+
+            base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
 }

@@ -2,5 +2,5 @@
 
 public interface IDeviceCommunicationService
 {
-    Task<bool> SendCommandAsync(string deviceId, string command, CancellationToken cancellationToken = default);
+    Task<bool> SendAsync(string deviceId, IReadOnlyDictionary<string, string> payload, CancellationToken cancellationToken = default);
 }

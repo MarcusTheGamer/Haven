@@ -8,4 +8,7 @@ public interface IDeviceRegistry
     Models.DeviceInfo? Get(string deviceId);
     IReadOnlyCollection<Models.DeviceInfo> All { get; }
     event Action? DevicesChanged;
+
+    // refresh saved device ips
+    Task RefreshStaleIpsAsync();
 }

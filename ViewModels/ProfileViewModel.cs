@@ -8,31 +8,18 @@ public partial class ProfileViewModel : ObservableObject
 {
     private readonly Services.IAuthService _auth;
 
-    [ObservableProperty]
-    private string firstName = string.Empty;
+    [ObservableProperty] private string firstName = string.Empty;
+    [ObservableProperty] private string email = string.Empty;
+    [ObservableProperty] private string memberSince = string.Empty;
+    [ObservableProperty] private bool isLoading;
+    [ObservableProperty] private string errorMessage = string.Empty;
 
-    [ObservableProperty]
-    private string email = string.Empty;
-
-    [ObservableProperty]
-    private string memberSince = string.Empty;
-
-    [ObservableProperty]
-    private bool isLoading;
-
-    [ObservableProperty]
-    private string errorMessage = string.Empty;
-
-    public ProfileViewModel(Services.IAuthService auth)
-    {
-        _auth = auth;
-    }
+    public ProfileViewModel(Services.IAuthService auth) => _auth = auth;
 
     [RelayCommand]
     private async Task LoadProfileAsync()
     {
-        if (IsLoading)
-            return;
+        if (IsLoading) return;
 
         IsLoading = true;
         ErrorMessage = string.Empty;
@@ -48,19 +35,14 @@ public partial class ProfileViewModel : ObservableObject
             }
 
             Email = profile.Email;
-
-            FirstName = string.IsNullOrWhiteSpace(profile.FirstName)
-                ? Email
-                : profile.FirstName;
-
+            FirstName = string.IsNullOrWhiteSpace(profile.FirstName) ? Email : profile.FirstName;
             MemberSince = profile.CreatedAt.HasValue
                 ? $"Member since {profile.CreatedAt.Value:MMMM yyyy}"
                 : string.Empty;
         }
-        catch (Exception ex)
+        catch
         {
             ErrorMessage = "Something went wrong loading your profile.";
-            Console.WriteLine(ex);
         }
         finally
         {

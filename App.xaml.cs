@@ -5,12 +5,16 @@ namespace Haven;
 public partial class App : Application
 {
     private readonly IAuthService _authService;
+    private readonly IPostAuthRouter _router;
 
-public App(IAuthService authService)
+    public App(
+        IAuthService authService,
+        IPostAuthRouter router)
     {
         InitializeComponent();
 
         _authService = authService;
+        _router = router;
     }
 
     protected override Window CreateWindow(IActivationState? activationState)
@@ -24,11 +28,18 @@ public App(IAuthService authService)
 
     private async Task InitializeAsync()
     {
-        await _authService.InitializeAsync();
-
-        if (_authService.IsLoggedIn())
+        try
         {
-            await Shell.Current.GoToAsync("//MainPage");
+            await _authService.InitializeAsync();
+
+            if (!_authService.IsLoggedIn())
+                return;
+
+            await _router.RouteAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[App] Initialization failed: {ex}");
         }
     }
 }

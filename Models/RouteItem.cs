@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Haven.Models
 {
+    // Modular Settings
     public class RouteItem
     {
         public string Name { get; set; }

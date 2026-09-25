@@ -1,3 +1,5 @@
+using Models = Haven.Models;
+
 namespace Haven.Devices.DeviceBricks
 {
     public partial class ClimateBrick : ContentView
@@ -14,6 +16,9 @@ namespace Haven.Devices.DeviceBricks
         public static readonly BindableProperty HumidityProperty =
             BindableProperty.Create(nameof(Humidity), typeof(string), typeof(ClimateBrick), string.Empty);
 
+        public static readonly BindableProperty DeviceProperty =
+            BindableProperty.Create(nameof(Device), typeof(DeviceInfo), typeof(ClimateBrick), null, propertyChanged: OnDeviceChanged);
+
         public string IconSource
         {
             get => (string)GetValue(IconSourceProperty);
@@ -29,18 +34,45 @@ namespace Haven.Devices.DeviceBricks
         public string Temperature
         {
             get => (string)GetValue(TemperatureProperty);
-            set => SetValue(TemperatureProperty, value);
+            private set => SetValue(TemperatureProperty, value);
         }
 
         public string Humidity
         {
             get => (string)GetValue(HumidityProperty);
-            set => SetValue(HumidityProperty, value);
+            private set => SetValue(HumidityProperty, value);
         }
 
-        public ClimateBrick()
+        public Models.DeviceInfo? Device
         {
-            InitializeComponent();
+            get => (Models.DeviceInfo?)GetValue(DeviceProperty);
+            set => SetValue(DeviceProperty, value);
         }
+
+        public ClimateBrick() => InitializeComponent();
+
+        private static void OnDeviceChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            var brick = (ClimateBrick)bindable;
+
+            if (oldValue is Models.DeviceInfo old)
+                old.StateChanged -= brick.OnDeviceStateChanged;
+
+            if (newValue is Models.DeviceInfo updated)
+                updated.StateChanged += brick.OnDeviceStateChanged;
+
+            brick.Refresh();
+        }
+
+        private void OnDeviceStateChanged() => Refresh();
+
+        private void Refresh()
+        {
+            Temperature = FormatOrDash(Device?.GetState("temperature"));
+            Humidity = FormatOrDash(Device?.GetState("humidity"));
+        }
+
+        private static string FormatOrDash(string? raw) =>
+            double.TryParse(raw, out var value) ? value.ToString("0") : "--";
     }
 }

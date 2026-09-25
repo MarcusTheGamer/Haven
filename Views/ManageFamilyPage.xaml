@@ -9,16 +9,14 @@
             x:DataType="viewmodels:ManageFamilyViewModel"
             BackgroundColor="{StaticResource BackgroundPrimary}"
             Title="Manage Families">
-    <ContentPage.BindingContext>
-        <viewmodels:ManageFamilyViewModel />
-    </ContentPage.BindingContext>
     <Grid>
         <Border Background="{StaticResource BackgroundPrimary}">
             <ScrollView>
                 <VerticalStackLayout Padding="12" Spacing="12">
-                    <CollectionView ItemsSource="{Binding Options}" SelectionMode="None">
+                    <ActivityIndicator IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}" />
+                    <CollectionView ItemsSource="{Binding Families}" SelectionMode="None">
                         <CollectionView.ItemTemplate>
-                            <DataTemplate x:DataType="models:RouteItem">
+                            <DataTemplate x:DataType="models:Family">
                                 <Border Style="{StaticResource BorderBase}" Background="Transparent" Margin="0,0,0,10">
                                     <Grid>
                                         <Grid Padding="16" ColumnDefinitions="*,Auto">
@@ -41,6 +39,10 @@
 
                 <Border Style="{StaticResource BorderBase}">
                     <Button Text="Manage Members" Clicked="OnManageMembersClicked" />
+                </Border>
+
+                <Border Style="{StaticResource BorderBase}">
+                    <Button Text="Invite Code" Clicked="OnInviteClicked" />
                 </Border>
 
                 <Border Style="{StaticResource BorderBase}">

@@ -6,6 +6,6 @@
              x:Name="root">
     <bricks:BaseBrick x:Name="Host"
         Title="{Binding Title, Source={x:Reference root}}">
-        <Label Style="{StaticResource ContentText}" Text="{Binding StatusText, Source={x:Reference root}}"/>
+        <Label x:Name="StatusLabel" Style="{StaticResource ContentText}"/>
     </bricks:BaseBrick>
 </ContentView>

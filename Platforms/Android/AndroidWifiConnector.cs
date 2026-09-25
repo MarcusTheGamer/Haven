@@ -11,6 +11,8 @@ public class AndroidWifiConnector : IWifiConnector
     private ConnectivityManager? _connectivityManager;
     private ConnectivityManager.NetworkCallback? _networkCallback;
 
+    private const int ConnectTimeoutMs = 20000;
+
     public async Task<List<string>> ScanForHavenNetworksAsync()
     {
         var status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
@@ -21,7 +23,6 @@ public class AndroidWifiConnector : IWifiConnector
 
             if (status != PermissionStatus.Granted)
             {
-                Console.WriteLine("[WiFi] Location permission was not granted.");
                 return new List<string>();
             }
         }
@@ -31,19 +32,13 @@ public class AndroidWifiConnector : IWifiConnector
 
         if (!wifiManager.IsWifiEnabled)
         {
-            Console.WriteLine("[WiFi] Wi-Fi is disabled.");
             return new List<string>();
         }
 
-        Console.WriteLine("[WiFi] Starting Wi-Fi scan...");
-
         var scanStarted = wifiManager.StartScan();
-
-        Console.WriteLine($"[WiFi] StartScan result: {scanStarted}");
 
         if (!scanStarted)
         {
-            Console.WriteLine("[WiFi] StartScan failed. Using cached results.");
             return GetHavenNetworks(wifiManager.ScanResults);
         }
 
@@ -51,16 +46,10 @@ public class AndroidWifiConnector : IWifiConnector
 
         var networks = GetHavenNetworks(wifiManager.ScanResults);
 
-        Console.WriteLine($"[WiFi] Found {networks.Count} HAVEN network(s).");
-
-        foreach (var network in networks)
-            Console.WriteLine($"[WiFi] {network}");
-
         return networks;
     }
 
-    private static List<string> GetHavenNetworks(
-        IEnumerable<ScanResult>? scanResults)
+    private static List<string> GetHavenNetworks(IEnumerable<ScanResult>? scanResults)
     {
         if (scanResults == null)
             return new List<string>();
@@ -68,32 +57,24 @@ public class AndroidWifiConnector : IWifiConnector
         return scanResults
             .Where(r => !string.IsNullOrWhiteSpace(r.Ssid))
             .Select(r => r.Ssid)
-            .Where(ssid =>
-                ssid.StartsWith(
-                    "HAVEN-",
-                    StringComparison.OrdinalIgnoreCase))
+            .Where(ssid => ssid.StartsWith("HAVEN-", StringComparison.OrdinalIgnoreCase))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
     }
 
-    public Task<bool> ConnectToNetworkAsync(
-        string ssid,
-        string password)
+    public Task<bool> ConnectToNetworkAsync(string ssid, string password)
     {
         var tcs = new TaskCompletionSource<bool>();
 
         var context = global::Android.App.Application.Context;
 
-        _connectivityManager =
-            (ConnectivityManager)context.GetSystemService(
-                Context.ConnectivityService)!;
+        _connectivityManager = (ConnectivityManager)context.GetSystemService(Context.ConnectivityService)!;
 
         if (_networkCallback != null)
         {
             try
             {
-                _connectivityManager.UnregisterNetworkCallback(
-                    _networkCallback);
+                _connectivityManager.UnregisterNetworkCallback(_networkCallback);
             }
             catch
             {
@@ -101,9 +82,6 @@ public class AndroidWifiConnector : IWifiConnector
 
             _networkCallback = null;
         }
-
-        Console.WriteLine(
-            $"[WiFi] Requesting device network: {ssid}");
 
         var specifier = new WifiNetworkSpecifier.Builder()
             .SetSsid(ssid)
@@ -118,36 +96,28 @@ public class AndroidWifiConnector : IWifiConnector
         _networkCallback = new ProvisioningNetworkCallback(
             onAvailable: network =>
             {
-                Console.WriteLine(
-                    "[WiFi] Device network available.");
+                try
+                {
+                    var bound = _connectivityManager.BindProcessToNetwork(network);
 
-                var bound =
-                    _connectivityManager.BindProcessToNetwork(network);
-
-                Console.WriteLine(
-                    $"[WiFi] BindProcessToNetwork result: {bound}");
-
-                tcs.TrySetResult(bound);
+                    tcs.TrySetResult(bound);
+                }
+                catch (Exception ex)
+                {
+                    tcs.TrySetResult(false);
+                }
             },
             onUnavailable: () =>
             {
-                Console.WriteLine(
-                    "[WiFi] Device network unavailable.");
-
                 tcs.TrySetResult(false);
             });
 
         try
         {
-            _connectivityManager.RequestNetwork(
-                request,
-                _networkCallback);
+            _connectivityManager.RequestNetwork(request, _networkCallback, ConnectTimeoutMs);
         }
         catch (Exception ex)
         {
-            Console.WriteLine(
-                $"[WiFi] RequestNetwork failed: {ex}");
-
             tcs.TrySetResult(false);
         }
 
@@ -156,41 +126,93 @@ public class AndroidWifiConnector : IWifiConnector
 
     public void DisconnectAndRestoreHomeWifi()
     {
-        Console.WriteLine(
-            "[WiFi] Disconnecting from device network.");
-
         if (_connectivityManager == null)
             return;
 
-        try
-        {
-            _connectivityManager.BindProcessToNetwork(null);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(
-                $"[WiFi] Failed to unbind process: {ex.Message}");
-        }
+        _connectivityManager.BindProcessToNetwork(null);
 
         if (_networkCallback != null)
         {
-            try
-            {
-                _connectivityManager.UnregisterNetworkCallback(
-                    _networkCallback);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(
-                    $"[WiFi] Failed to unregister callback: {ex.Message}");
-            }
+            _connectivityManager.UnregisterNetworkCallback(_networkCallback);
 
             _networkCallback = null;
         }
     }
 
-    private class ProvisioningNetworkCallback :
-        ConnectivityManager.NetworkCallback
+    public async Task<string?> GetCurrentSsidAsync()
+    {
+        var status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
+
+        if (status != PermissionStatus.Granted)
+        {
+            status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
+
+            if (status != PermissionStatus.Granted)
+            {
+                return null;
+            }
+        }
+
+        var context = global::Android.App.Application.Context;
+        var wifiManager = (WifiManager)context.GetSystemService(Context.WifiService)!;
+
+        var ssid = wifiManager.ConnectionInfo?.SSID;
+
+        if (string.IsNullOrWhiteSpace(ssid) || ssid == "<unknown ssid>")
+            return null;
+
+        return ssid.Trim('"');
+    }
+
+    public Task<string?> GetLocalIpAddressAsync()
+    {
+        try
+        {
+            var context = global::Android.App.Application.Context;
+
+            var connectivityManager = (ConnectivityManager)context.GetSystemService(Context.ConnectivityService)!;
+
+            var activeNetwork = connectivityManager.ActiveNetwork;
+
+            if (activeNetwork == null)
+            {
+                return Task.FromResult<string?>(null);
+            }
+
+            var linkProperties =
+                connectivityManager.GetLinkProperties(activeNetwork);
+
+            if (linkProperties == null)
+            {
+                return Task.FromResult<string?>(null);
+            }
+
+            foreach (var linkAddress in linkProperties.LinkAddresses)
+            {
+                var address = linkAddress.Address;
+
+                if (address == null)
+                    continue;
+
+                var ip = address.HostAddress;
+
+                if (string.IsNullOrWhiteSpace(ip))
+                    continue;
+
+                if (ip.Contains(':'))
+                    continue;
+
+                return Task.FromResult<string?>(ip);
+            }
+            return Task.FromResult<string?>(null);
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult<string?>(null);
+        }
+    }
+
+    private class ProvisioningNetworkCallback : ConnectivityManager.NetworkCallback
     {
         private readonly Action<Network> _onAvailable;
         private readonly Action _onUnavailable;
@@ -214,31 +236,6 @@ public class AndroidWifiConnector : IWifiConnector
             base.OnUnavailable();
             _onUnavailable();
         }
-    }
-    public async Task<string?> GetCurrentSsidAsync()
-    {
-        var status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
-
-        if (status != PermissionStatus.Granted)
-        {
-            status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
-
-            if (status != PermissionStatus.Granted)
-            {
-                Console.WriteLine("[WiFi] Location permission was not granted.");
-                return null;
-            }
-        }
-
-        var context = global::Android.App.Application.Context;
-        var wifiManager = (WifiManager)context.GetSystemService(Context.WifiService)!;
-
-        var ssid = wifiManager.ConnectionInfo?.SSID;
-
-        if (string.IsNullOrWhiteSpace(ssid) || ssid == "<unknown ssid>")
-            return null;
-
-        return ssid.Trim('"');
     }
 }
 #endif

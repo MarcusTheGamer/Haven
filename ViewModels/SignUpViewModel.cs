@@ -9,34 +9,19 @@ public partial class SignUpViewModel : ObservableObject
 {
     private readonly Services.IAuthService _supabase;
 
-    [ObservableProperty]
-    private string firstName = string.Empty;
+    [ObservableProperty] private string firstName = string.Empty;
+    [ObservableProperty] private string email = string.Empty;
+    [ObservableProperty] private string password = string.Empty;
+    [ObservableProperty] private string confirmPassword = string.Empty;
+    [ObservableProperty] private bool isLoading;
+    [ObservableProperty] private string errorMessage = string.Empty;
 
-    [ObservableProperty]
-    private string email = string.Empty;
-
-    [ObservableProperty]
-    private string password = string.Empty;
-
-    [ObservableProperty]
-    private string confirmPassword = string.Empty;
-
-    [ObservableProperty]
-    private bool isLoading;
-
-    [ObservableProperty]
-    private string errorMessage = string.Empty;
-
-    public SignUpViewModel(Services.IAuthService supabase)
-    {
-        _supabase = supabase;
-    }
+    public SignUpViewModel(Services.IAuthService supabase) => _supabase = supabase;
 
     [RelayCommand]
     private async Task SignUpAsync()
     {
-        if (IsLoading)
-            return;
+        if (IsLoading) return;
 
         ErrorMessage = string.Empty;
 
@@ -76,9 +61,8 @@ public partial class SignUpViewModel : ObservableObject
                 ConfirmPassword = ConfirmPassword
             };
 
-            var success = await _supabase.SignUpAsync(signUp);
-
-            if (!success)
+            // create the account
+            if (!await _supabase.SignUpAsync(signUp))
             {
                 ErrorMessage = "An error occurred while creating your account.";
                 return;
@@ -86,10 +70,9 @@ public partial class SignUpViewModel : ObservableObject
 
             await Shell.Current.GoToAsync("//LoginPage");
         }
-        catch (Exception ex)
+        catch
         {
             ErrorMessage = "An error occurred while creating your account.";
-            Console.WriteLine(ex);
         }
         finally
         {
@@ -98,8 +81,5 @@ public partial class SignUpViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task LoginAsync()
-    {
-        await Shell.Current.GoToAsync("//LoginPage");
-    }
+    private async Task LoginAsync() => await Shell.Current.GoToAsync("//LoginPage");
 }

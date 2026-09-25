@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Haven.Views.FamilySetupPage"
+             Title="Set up your home"
+             Shell.NavBarIsVisible="False"
+             Shell.TabBarIsVisible="False"
+             BackgroundColor="{StaticResource BackgroundPrimary}">
+    <Grid>
+        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" MaximumWidthRequest="280" Spacing="14">
+            <Label FontSize="28" FontAttributes="Bold" Text="Welcome to Haven" TextColor="{StaticResource TextPrimary}" HorizontalTextAlignment="Center" />
+            <Label Style="{StaticResource ContentText}" Text="Create a new home for your family, or join one someone else already set up." HorizontalTextAlignment="Center" Margin="0,0,0,16" />
+
+            <Border Style="{StaticResource BorderBase}" BackgroundColor="{StaticResource ForegroundPrimary}">
+                <Button Text="Create a Family" Clicked="OnCreateClicked" Background="Transparent" />
+            </Border>
+
+            <Border Style="{StaticResource BorderBase}" BackgroundColor="{StaticResource ForegroundPrimary}">
+                <Button Text="Join a Family" Clicked="OnJoinClicked" Background="Transparent" />
+            </Border>
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

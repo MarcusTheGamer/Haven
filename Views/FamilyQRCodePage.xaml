@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:Haven.ViewModels"
+             x:Class="Haven.Views.FamilyQrCodePage"
+             x:DataType="viewmodels:FamilyQrCodeViewModel"
+             Title="Invite Code"
+             BackgroundColor="{StaticResource BackgroundPrimary}">
+    <Grid>
+        <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="14" Padding="30">
+            <Border Style="{StaticResource BorderBase}" BackgroundColor="White" Padding="16" WidthRequest="240" HeightRequest="240">
+                <Image Source="{Binding QrImageSource}" Aspect="AspectFit" />
+            </Border>
+
+            <Label Text="{Binding Code}" Style="{StaticResource ImportantText}" HorizontalTextAlignment="Center" />
+            <Label Text="{Binding ExpiresText}" Style="{StaticResource ContentText}" HorizontalTextAlignment="Center" />
+            <Label Text="{Binding ErrorMessage}" TextColor="Red" FontSize="12" HorizontalTextAlignment="Center" />
+
+            <Button Text="New Code" Command="{Binding GenerateCommand}" />
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

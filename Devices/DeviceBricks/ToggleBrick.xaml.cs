@@ -1,3 +1,4 @@
+using Models = Haven.Models;
 using Haven.Services;
 
 namespace Haven.Devices.DeviceBricks
@@ -7,14 +8,8 @@ namespace Haven.Devices.DeviceBricks
         public static readonly BindableProperty TitleProperty =
             BindableProperty.Create(nameof(Title), typeof(string), typeof(ToggleBrick), string.Empty);
 
-        public static readonly BindableProperty StatusTextProperty =
-            BindableProperty.Create(nameof(StatusText), typeof(string), typeof(ToggleBrick), string.Empty);
-
-        public static readonly BindableProperty DeviceIdProperty =
-            BindableProperty.Create(nameof(DeviceId), typeof(string), typeof(ToggleBrick), string.Empty);
-
-        public static readonly BindableProperty IsOnProperty =
-            BindableProperty.Create(nameof(IsOn), typeof(bool), typeof(ToggleBrick), false, propertyChanged: OnIsOnChanged);
+        public static readonly BindableProperty DeviceProperty =
+            BindableProperty.Create(nameof(Device), typeof(DeviceInfo), typeof(ToggleBrick), null, propertyChanged: OnDeviceChanged);
 
         public string Title
         {
@@ -22,22 +17,10 @@ namespace Haven.Devices.DeviceBricks
             set => SetValue(TitleProperty, value);
         }
 
-        public string StatusText
+        public Models.DeviceInfo? Device
         {
-            get => (string)GetValue(StatusTextProperty);
-            set => SetValue(StatusTextProperty, value);
-        }
-
-        public string DeviceId
-        {
-            get => (string)GetValue(DeviceIdProperty);
-            set => SetValue(DeviceIdProperty, value);
-        }
-
-        public bool IsOn
-        {
-            get => (bool)GetValue(IsOnProperty);
-            set => SetValue(IsOnProperty, value);
+            get => (Models.DeviceInfo?)GetValue(DeviceProperty);
+            set => SetValue(DeviceProperty, value);
         }
 
         private IDeviceCommunicationService? _comms;
@@ -49,30 +32,50 @@ namespace Haven.Devices.DeviceBricks
             var tap = new TapGestureRecognizer();
             tap.Tapped += OnTapped;
             Host.GestureRecognizers.Add(tap);
-
-            UpdateIcon();
         }
 
-        private static void OnIsOnChanged(BindableObject bindable, object oldValue, object newValue) =>
-            ((ToggleBrick)bindable).UpdateIcon();
+        private static void OnDeviceChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            var brick = (ToggleBrick)bindable;
 
-        private void UpdateIcon() => Host.IconSource = IsOn ? "sun.png" : "moon.png";
+            if (oldValue is Models.DeviceInfo old)
+                old.StateChanged -= brick.OnDeviceStateChanged;
+
+            if (newValue is Models.DeviceInfo updated)
+                updated.StateChanged += brick.OnDeviceStateChanged;
+
+            brick.Refresh();
+        }
+
+        private void OnDeviceStateChanged() => Refresh();
+
+        private bool IsOn => Device?.GetState("on") == "1";
+
+        private void Refresh()
+        {
+            Host.IconSource = IsOn ? "sun.png" : "moon.png";
+            StatusLabel.Text = IsOn ? "On" : "Off";
+        }
 
         private async void OnTapped(object? sender, TappedEventArgs e)
         {
-            var previous = IsOn;
-            IsOn = !IsOn;
+            var device = Device;
 
-            if (string.IsNullOrEmpty(DeviceId))
+            if (device is null || string.IsNullOrEmpty(device.Id))
                 return;
+
+            var previous = device.GetState("on");
+            var desired = !IsOn ? "1" : "0";
+
+            device.ApplyState(new[] { new KeyValuePair<string, string>("on", desired) });
 
             _comms ??= IPlatformApplication.Current?.Services.GetService<IDeviceCommunicationService>();
 
             var ok = _comms is not null &&
-                     await _comms.SendCommandAsync(DeviceId, IsOn ? "on" : "off");
+                     await _comms.SendAsync(device.Id, new Dictionary<string, string> { ["on"] = desired });
 
             if (!ok)
-                IsOn = previous;
+                device.ApplyState(new[] { new KeyValuePair<string, string>("on", previous ?? "0") });
         }
     }
 }
